@@ -1,0 +1,9 @@
+name: "Wishlist"
+description: "Whistlist webserver application"
+version: "1.0.0"
+slug: "wishlist"
+init: false
+arch:
+  - aarch64
+ports:
+  5000/tcp: 5000
