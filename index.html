@@ -4,432 +4,63 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wishlist</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #392323;          /* was #f3f4f6 */
-      --card: #ffffff;
-      --text: #ffffff;        /* make text light on black */
-      --muted: #9ca3af;
-      --accent: #f97316;
-      --accent-dark: #ea580c;
-      --reserved: #10b981;
-      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem) 4rem;
-    }
-
-    header {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-      margin-bottom: 2rem;
-      align-items: center;   /* center children horizontally */
-      text-align: center;    /* center text inside h1 + p */
-    }
-
-    header h1 {
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      margin: 0;
-    }
-
-    header p {
-      color: var(--muted);
-      margin: 0;
-      max-width: 65ch;
-    }
-
-    .wish-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .wish-card {
-      background: var(--card);
-      border-radius: 1rem;
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: transform 150ms ease, box-shadow 150ms ease;
-    }
-
-    .wish-card.reserved {
-      border-color: rgba(16, 185, 129, 0.4);
-      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.25);
-    }
-
-    .wish-card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      background: rgba(15, 23, 42, 0.05);
-    }
-
-    .wish-body {
-      padding: 1.15rem 1.25rem 1.35rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .wish-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .wish-price {
-      font-weight: 600;
-      color: var(--accent-dark);
-    }
-
-    .wish-note {
-      color: var(--muted);
-      margin-top: 0.15rem;
-      flex: 1;
-    }
-
-    .wish-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-top: 1rem;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 0.65rem 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 120ms ease, box-shadow 120ms ease;
-    }
-        .hero-image {
-      margin-top: 1rem;
-      max-width: 100%;
-      border-radius: 1rem;
-      display: block;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
-    }
-
-    .btn:focus-visible {
-      outline: 3px solid rgba(249, 115, 22, 0.4);
-      outline-offset: 2px;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      background: var(--accent-dark);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--accent-dark);
-      border: 1px solid rgba(249, 115, 22, 0.4);
-    }
-
-    .wish-card.reserved .btn-outline {
-      color: var(--reserved);
-      border-color: rgba(16, 185, 129, 0.4);
-    }
-
-    .reserve-status {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--reserved);
-      margin-left: auto;
-      align-self: center;
-    }
-
-    .instructions {
-      padding: 1rem 1.25rem;
-      border: 1px dashed rgba(15, 23, 42, 0.2);
-      border-radius: 0.85rem;
-      background: rgba(255, 255, 255, 0.6);
-      margin-bottom: 2rem;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .reservation {
-      margin-top: 2rem;
-      padding: 1.25rem;
-      border: 1px solid rgba(15, 23, 42, 0.1);
-      border-radius: 0.85rem;
-      background: rgba(255, 255, 255, 0.6);
-    }
-
-    .reservation h2 {
-      font-size: 1.5rem;
-      margin: 0 0 1rem;
-    }
-
-    .reservation label {
-      display: block;
-      margin-bottom: 0.75rem;
-    }
-
-    .reservation input[type="text"] {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid rgba(15, 23, 42, 0.2);
-      border-radius: 0.5rem;
-      font-size: 1rem;
-    }
-
-    .reservation input[type="checkbox"] {
-      margin-right: 0.5rem;
-    }
-
-    .reservation button {
-      margin-top: 1rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 150ms ease;
-    }
-
-    .reservation button:hover {
-      background: var(--accent-dark);
-    }
-
-    @media (max-width: 600px) {
-      .wish-card img {
-        height: 180px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
+<script>
+  // list of audio tracks
+  const tracks = [
+    '/media/welcome.mp3',
+     '/media/welcome-2.mp3',
+     '/media/welcome-3.mp3'
+  ];
+
+  // function to pick a random track
+  function getRandomTrack() {
+    const index = Math.floor(Math.random() * tracks.length);
+    return tracks[index];
+  }
+
+  function startAudioOnGesture() {
+    const audio = new Audio(getRandomTrack());
+    audio.preload = 'auto';
+    audio.play().catch(e => {
+      console.warn('Playback failed:', e);
+    });
+  }
+
+  // listen for user gestures; run once
+  ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(evt =>
+    window.addEventListener(evt, startAudioOnGesture, { once: true, passive: true })
+  );
+</script>
   <canvas id="snow-canvas" aria-hidden="true"></canvas>
   <div class="page">
     <header>
       <h1>Weihnachts Wunschliste</h1>
-      <p>Pick something I would love! Hit Reserve so nobody accidentally buys the same thing twice.</p>
-      <img src="IMG_1706.jpg" alt="Weihnachtsbild" class="hero-image">
+      <p>Hallo Leute. Wilkommen zu unserer Wunschliste. Bitte nehmt euch Zeit bei der Auswahl der Geschenke und schaltet auf jeden Fall den Ton ein für die maximale Experience. Bitte auf die einzelnen Porträt Bilder klicken um die Wünsche des jeweiligen Familien Mitglieds angezeigt zu  bekommen.</p>
+      <img src="media/familie.jpg" alt="Weihnachtsbild" class="hero-image">
     </header>
-     <section id="wish-grid" class="wish-grid" aria-live="polite"></section>
+
+    <div class="portrait-gallery">
+      <button data-member="lena" type="button">
+        <img class="portrait" src="media/lena.jpg" alt="Lenas Wunschliste">
+      </button>
+      <button data-member="lea" type="button">
+        <img class="portrait" src="media/lea.jpg" alt="Lea Wunschliste">
+      </button>
+      <button data-member="zoe" type="button">
+        <img class="portrait" src="media/zoe.jpg" alt="Zoe Wunschliste">
+      </button>
+      <button data-member="holger" type="button">
+        <img class="portrait" src="media/holger.png" alt="Holger Wunschliste">
+      </button>
+    </div>
+
+    <section id="wish-grid" class="wish-grid" hidden></section>
   </div>
 
-  <script>
-    /**
-     * Edit the objects below to change the preset wishes.
-     * Provide at least id, title, and url. Price, note, and image are optional.
-     */
-    const wishes = [
-      {
-        id: "dab-radio",
-        title: "DAB Radio",
-        url: "https://amzn.eu/d/cYDzfbr",
-        price: "93€",
-        note: "DAB+ Radio",
-        image: "https://m.media-amazon.com/images/I/71iRIQdX9uL._AC_SL1500_.jpg"
-      },
-      {
-        id: "sony-wh-1000xm5",
-        title: "Sony WH-1000XM5 Noise Canceling Headphones",
-        url: "https://www.amazon.com/dp/B09XS7JWHH",
-        price: "$348.00",
-        note: "Daily focus + flights hero."
-      },
-      {
-        id: "kindle-scribe",
-        title: "Kindle Scribe",
-        url: "https://www.amazon.com/dp/B09BSKG5BZ",
-        price: "$369.99",
-        note: "For reading + annotating meeting notes."
-      }
-    ];
-
-    const grid = document.getElementById("wish-grid");
-    let reservations = {};
-
-    // Initialize
-    (async () => {
-      reservations = await loadReservations();
-      wishes.forEach((wish) => {
-        const card = createWishCard(wish);
-        grid.appendChild(card);
-      });
-    })();
-
-    async function loadReservations() {
-      try {
-        const resp = await fetch('/api/reservation');
-        if (resp.ok) {
-          return await resp.json();
-        }
-      } catch (error) {
-        console.warn("Could not read reservation state", error);
-      }
-      return {};
-    }
-
-    async function persistReservations() {
-      try {
-        await fetch('/api/reservation', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reservations),
-        });
-      } catch (error) {
-        console.error("Failed to save reservations", error);
-      }
-    }
-
-    function extractAsin(url) {
-      if (!url) return null;
-      const asinMatch = url.match(/(?:dp|gp\/product|gp\/offer-listing|\/ASIN\/)([A-Z0-9]{10})/i);
-      return asinMatch ? asinMatch[1].toUpperCase() : null;
-    }
-
-    function imageFromWish(wish) {
-      if (wish.image) return wish.image;
-      const asin = extractAsin(wish.url);
-      if (asin) {
-        return `https://m.media-amazon.com/images/I/${asin}._SL500_.jpg`;
-      }
-      const fallbackText = encodeURIComponent(wish.title ?? "Wishlist item");
-      return `https://placehold.co/600x400?text=${fallbackText}`;
-    }
-
-    function createWishCard(wish) {
-      const reserved = Boolean(reservations[wish.id]);
-      const card = document.createElement("article");
-      card.className = `wish-card${reserved ? " reserved" : ""}`;
-      card.dataset.wishId = wish.id;
-      card.innerHTML = `
-        <img src="${imageFromWish(wish)}" alt="${wish.title}">
-        <div class="wish-body">
-          <p class="wish-title">${wish.title}</p>
-          ${wish.price ? `<span class="wish-price">${wish.price}</span>` : ""}
-          ${wish.note ? `<p class="wish-note">${wish.note}</p>` : ""}
-          <div class="wish-actions">
-            <a class="btn btn-primary" href="${wish.url}" target="_blank" rel="noopener noreferrer">View on Amazon</a>
-            <button class="btn btn-outline" type="button" aria-pressed="${reserved}" data-role="reserve">
-              ${reserved ? "Unreserve" : "Reserve"}
-            </button>
-            <span class="reserve-status" aria-live="polite">${reserved ? "Reserved ✔" : ""}</span>
-          </div>
-        </div>
-      `;
-
-      const reserveBtn = card.querySelector('[data-role="reserve"]');
-      reserveBtn.addEventListener("click", () => toggleReservation(wish, card));
-      return card;
-    }
-
-    async function toggleReservation(wish, card) {
-      const isReserved = !reservations[wish.id];
-      if (isReserved) {
-        reservations[wish.id] = true;
-      } else {
-        delete reservations[wish.id];
-      }
-      
-      // Optimistic UI update
-      const reserveBtn = card.querySelector('[data-role="reserve"]');
-      const status = card.querySelector('.reserve-status');
-      card.classList.toggle("reserved", isReserved);
-      reserveBtn.textContent = isReserved ? "Unreserve" : "Reserve";
-      reserveBtn.setAttribute("aria-pressed", String(isReserved));
-      status.textContent = isReserved ? "Reserved ✔" : "";
-
-      await persistReservations();
-    }
-  // --- Snow effect ---
-    (function initSnow() {
-      const canvas = document.getElementById('snow-canvas');
-      if (!canvas) return;
-
-      const ctx = canvas.getContext('2d');
-      let width, height, flakes;
-
-      function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        const count = Math.floor(width * height / 5000); // density
-        flakes = Array.from({ length: count }, () => newFlake());
-      }
-
-      function newFlake() {
-        return {
-          x: Math.random() * width,
-          y: Math.random() * height,
-          r: 1 + Math.random() * 2.5,
-          speedY: 0.5 + Math.random() * 1.5,
-          driftX: -0.5 + Math.random() * 1,
-          opacity: 0.4 + Math.random() * 0.6,
-        };
-      }
-
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = '#fff';
-
-        for (const f of flakes) {
-          ctx.globalAlpha = f.opacity;
-          ctx.beginPath();
-          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-          ctx.fill();
-
-          f.y += f.speedY;
-          f.x += f.driftX;
-
-          if (f.y > height + 5) {
-            f.y = -5;
-            f.x = Math.random() * width;
-          }
-          if (f.x < -5) f.x = width + 5;
-          if (f.x > width + 5) f.x = -5;
-        }
-
-        requestAnimationFrame(draw);
-      }
-
-      // Style canvas above background but below content
-      Object.assign(canvas.style, {
-        position: 'fixed',
-        inset: '0',
-        pointerEvents: 'none',
-        zIndex: '0',
-      });
-      document.querySelector('.page').style.position = 'relative';
-      document.querySelector('.page').style.zIndex = '1';
-
-      window.addEventListener('resize', resize);
-      resize();
-      draw();
-    })();
-  </script>
+  <script src="snow.js" type="module"></script>
+  <script src="wishes.js" type="module"></script>
 </body>
 </html>

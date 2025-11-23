@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wishlist Admin</title>
+  <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+  <canvas id="snow-canvas" aria-hidden="true"></canvas>
+  <div class="page">
+    <div class="page-actions">
+      <button
+        class="burger-button"
+        type="button"
+        aria-label="Menü öffnen"
+        aria-expanded="false"
+        data-role="menu-toggle">
+        <span></span>
+        <span></span>
+      </button>
+      <div class="page-menu" hidden>
+        <button class="page-menu-item" type="button" data-role="add-wish">
+          Neuen Wunsch hinzufügen
+        </button>
+        <button class="page-menu-item" type="button" data-role="edit-wish">
+          Wunsch bearbeiten
+        </button>
+        <button class="page-menu-item" type="button" data-role="delete-wish">
+          Wunsch löschen
+        </button>
+      </div>
+    </div>
+
+    <header>
+      <h1>Wishlist Admin</h1>
+      <p>Verwalte hier alle Wünsche. Diesen Link nur mit Admins teilen.</p>
+    </header>
+
+    <section id="wish-form-section" class="wish-form" hidden>
+      <h2>
+        Wunsch hinzufügen
+        <button type="button" class="btn btn-outline" data-role="close-form">
+          Schließen
+        </button>
+      </h2>
+      <form id="new-wish-form" novalidate>
+        <label>
+          Besitzer*in
+          <select id="wish-owner" name="owner" required>
+            <option value="" disabled selected>Bitte auswählen</option>
+          </select>
+        </label>
+
+        <label>
+          Wunsch-Titel
+          <input id="wish-title" name="title" type="text" required>
+        </label>
+
+        <label>
+          Wunsch-Link
+          <input id="wish-url" name="url" type="url" required>
+        </label>
+
+        <label>
+          Preis
+          <input id="wish-price" name="price" type="text">
+        </label>
+
+        <label>
+          Bild-URL
+          <input id="wish-image" name="image" type="url">
+        </label>
+
+        <label>
+          Beschreibung
+          <textarea id="wish-description" name="description" rows="3"></textarea>
+        </label>
+
+        <button class="btn btn-primary" type="submit">Speichern</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="wish-editor-section" class="wish-form wish-editor" hidden>
+      <h2>
+        Wunsch bearbeiten
+        <button type="button" class="btn btn-outline" data-role="close-editor">
+          Schließen
+        </button>
+      </h2>
+      <form id="edit-wish-form" novalidate>
+        <label>
+          Wunsch auswählen
+          <select id="wish-select" name="selectedWish" required>
+            <option value="" disabled selected>Bitte zuerst laden …</option>
+          </select>
+        </label>
+        <input id="edit-wish-id" name="id" type="hidden">
+
+        <label>
+          Besitzer*in
+          <select id="edit-wish-owner" name="owner" required>
+            <option value="" disabled selected>Bitte auswählen</option>
+          </select>
+        </label>
+
+        <label>
+          Wunsch-Titel
+          <input id="edit-wish-title" name="title" type="text" required>
+        </label>
+
+        <label>
+          Wunsch-Link
+          <input id="edit-wish-url" name="url" type="url" required>
+        </label>
+
+        <label>
+          Preis
+          <input id="edit-wish-price" name="price" type="text">
+        </label>
+
+        <label>
+          Bild-URL
+          <input id="edit-wish-image" name="image" type="url">
+        </label>
+
+        <label>
+          Beschreibung
+          <textarea id="edit-wish-description" name="description" rows="3"></textarea>
+        </label>
+
+        <button class="btn btn-primary" type="submit">Aktualisieren</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="wish-delete-section" class="wish-form wish-delete" hidden>
+      <h2>
+        Wunsch löschen
+        <button type="button" class="btn btn-outline" data-role="close-delete">
+          Schließen
+        </button>
+      </h2>
+      <form id="delete-wish-form" novalidate>
+        <label>
+          Wunsch auswählen
+          <select id="delete-wish-select" name="wishToDelete" required>
+            <option value="" disabled selected>Bitte zuerst laden …</option>
+          </select>
+        </label>
+
+        <p class="wish-preview" data-role="wish-preview" aria-live="polite">
+          Bitte Wunsch auswählen.
+        </p>
+
+        <button class="btn btn-primary" type="submit">Löschen</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
+
+  <script src="snow.js" type="module"></script>
+  <script src="admin.js" type="module" data-admin></script>
+</body>
+</html>
