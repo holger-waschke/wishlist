@@ -384,7 +384,9 @@ header p {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-top: 1rem;
+  padding: 0 1.25rem 1rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn {
@@ -394,7 +396,11 @@ header p {
   font-weight: 600;
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
 }
+
 
 .btn:focus-visible {
   outline: 3px solid rgba(249, 115, 22, 0.4);
