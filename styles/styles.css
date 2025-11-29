@@ -316,10 +316,12 @@ header p {
 
 .wish-card img {
   width: 100%;
-  height: 220px;
+  height: auto;
+  max-height: 220px;
   object-fit: contain;
   background: rgba(15, 23, 42, 0.8);
 }
+
 .wish-card-clickable {
   cursor: pointer;
   transition: transform 150ms ease;
@@ -361,27 +363,16 @@ header p {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  padding: 0 1.25rem 1rem;
-  align-items: center;
-  justify-content: center;
+  margin-top: 1rem;
 }
 
 .btn {
   border: none;
   border-radius: 999px;
-  padding: 0;
+  padding: 0.65rem 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease;
-  height: 42px;
-  min-width: 100px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 0.95rem;
-  line-height: 1;
-  box-sizing: border-box;
 }
 
 .btn:focus-visible {
@@ -415,9 +406,8 @@ header p {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--reserved);
-  display: block;
-  text-align: center;
-  padding: 0 1.25rem 1rem;
+  margin-left: auto;
+  align-self: center;
 }
 
 .modal {
@@ -559,6 +549,6 @@ header p {
 
 @media (max-width: 600px) {
   .wish-card img {
-    height: 180px;
+    max-height: 180px;
   }
 }
