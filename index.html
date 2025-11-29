@@ -10,9 +10,7 @@
 <script>
   // list of audio tracks
   const tracks = [
-    '/media/welcome.mp3',
-     '/media/welcome-2.mp3',
-     '/media/welcome-3.mp3'
+     '/media/welcome-2.mp3'
   ];
 
   // function to pick a random track
@@ -59,6 +57,41 @@
 
     <section id="wish-grid" class="wish-grid" hidden></section>
   </div>
+
+  <!-- Name Modal -->
+  <div id="name-modal" class="modal" hidden>
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h2>Wunsch reservieren</h2>
+      <p>Bitte gib deinen Namen ein:</p>
+      <form id="name-form">
+        <input 
+          type="text" 
+          id="reserver-name" 
+          placeholder="Dein Name" 
+          required 
+          autocomplete="name"
+          minlength="2"
+        >
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Reservieren</button>
+          <button type="button" class="btn btn-outline" data-role="cancel">Abbrechen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Description Modal -->
+  <div id="description-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-role="close-description"></div>
+    <div class="modal-content modal-content-wide">
+      <button type="button" class="modal-close-btn" data-role="close-description" aria-label="Schließen">×</button>
+      <div id="description-content">
+        <!-- Content will be injected here -->
+      </div>
+    </div>
+  </div>
+
 
   <script src="snow.js" type="module"></script>
   <script src="wishes.js" type="module"></script>

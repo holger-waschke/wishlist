@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type Reservations map[string]bool
+type Reservations map[string]string
 
 type Wish struct {
 	ID          string `json:"id"`

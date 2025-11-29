@@ -8,6 +8,11 @@ let currentOwner = null;
 const reserveSound = new Audio("media/reserved.mp3");
 reserveSound.preload = "auto";
 
+// Modal elements
+const modal = document.getElementById("name-modal");
+const nameForm = document.getElementById("name-form");
+const nameInput = document.getElementById("reserver-name");
+
 async function initializeWishlist(wishes = []) {
   reservations = await loadReservations();
   wishesByPerson = wishes.reduce((acc, wish) => {
@@ -64,12 +69,13 @@ async function persistReservations() {
 }
 
 function createWishCard(wish) {
-  const reserved = Boolean(reservations[wish.id]);
+  const reservedBy = reservations[wish.id] || "";
+  const isReserved = Boolean(reservedBy);
   const imageMarkup = wish.image
     ? `<img src="${wish.image}" alt="${wish.title}">`
     : "";
   const card = document.createElement("article");
-  card.className = `wish-card${reserved ? " reserved" : ""}`;
+  card.className = `wish-card${isReserved ? " reserved" : ""}`;
   card.dataset.wishId = wish.id;
   card.innerHTML = `
     ${imageMarkup}
@@ -78,10 +84,10 @@ function createWishCard(wish) {
       ${wish.price ? `<span class="wish-price">${wish.price}</span>` : ""}
       <div class="wish-actions">
         <a class="btn btn-primary" href="${wish.url}" target="_blank" rel="noopener noreferrer">Webshop</a>
-        <button class="btn btn-outline" type="button" aria-pressed="${reserved}" data-role="reserve">
-          ${reserved ? "Unreserve" : "Reserve"}
+        <button class="btn btn-outline" type="button" aria-pressed="${isReserved}" data-role="reserve">
+          ${isReserved ? "Unreserve" : "Reserve"}
         </button>
-        <span class="reserve-status" aria-live="polite">${reserved ? "Reserved ✔" : ""}</span>
+        <span class="reserve-status" aria-live="polite">${isReserved ? `Reserviert von ${reservedBy} ✔` : ""}</span>
       </div>
     </div>
   `;
@@ -91,33 +97,93 @@ function createWishCard(wish) {
   return card;
 }
 
-async function toggleReservation(wish, card) {
-  const isReserved = !reservations[wish.id];
-  if (isReserved) {
-    reservations[wish.id] = true;
-  } else {
-    delete reservations[wish.id];
-  }
 
-  const reserveBtn = card.querySelector('[data-role="reserve"]');
-  const status = card.querySelector(".reserve-status");
-  card.classList.toggle("reserved", isReserved);
-  reserveBtn.textContent = isReserved ? "Unreserve" : "Reserve";
-  reserveBtn.setAttribute("aria-pressed", String(isReserved));
-  status.textContent = isReserved ? "Reserved ✔" : "";
-
-  // play sound only when reserving
-  if (isReserved) {
-    try {
-      // restart from beginning if clicked quickly
-      reserveSound.currentTime = 0;
-      reserveSound.play();
-    } catch (e) {
-      console.warn("Could not play reserve sound", e);
+function showNameModal() {
+  return new Promise((resolve, reject) => {
+    if (!modal || !nameForm || !nameInput) {
+      reject(new Error("Modal elements not found"));
+      return;
     }
-  }
 
-  await persistReservations();
+    // Clear previous input
+    nameInput.value = "";
+    modal.hidden = false;
+    requestAnimationFrame(() => {
+      modal.classList.add("is-visible");
+      nameInput.focus();
+    });
+
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      const name = nameInput.value.trim();
+      if (name.length >= 2) {
+        closeModal();
+        resolve(name);
+      }
+    };
+
+    const handleCancel = () => {
+      closeModal();
+      reject(new Error("User cancelled"));
+    };
+
+    const closeModal = () => {
+      modal.classList.remove("is-visible");
+      setTimeout(() => {
+        modal.hidden = true;
+      }, 200);
+      nameForm.removeEventListener("submit", handleSubmit);
+      modal.querySelector('[data-role="cancel"]')?.removeEventListener("click", handleCancel);
+    };
+
+    nameForm.addEventListener("submit", handleSubmit, { once: true });
+    modal.querySelector('[data-role="cancel"]')?.addEventListener("click", handleCancel, { once: true });
+  });
+}
+
+async function toggleReservation(wish, card) {
+  const currentReserver = reservations[wish.id] || "";
+  const isCurrentlyReserved = Boolean(currentReserver);
+
+  if (!isCurrentlyReserved) {
+    // Reserving - ask for name
+    try {
+      const name = await showNameModal();
+      reservations[wish.id] = name;
+
+      const reserveBtn = card.querySelector('[data-role="reserve"]');
+      const status = card.querySelector(".reserve-status");
+      card.classList.add("reserved");
+      reserveBtn.textContent = "Unreserve";
+      reserveBtn.setAttribute("aria-pressed", "true");
+      status.textContent = `Reserviert von ${name} ✔`;
+
+      // Play sound
+      try {
+        reserveSound.currentTime = 0;
+        reserveSound.play();
+      } catch (e) {
+        console.warn("Could not play reserve sound", e);
+      }
+
+      await persistReservations();
+    } catch (error) {
+      // User cancelled - do nothing
+      console.log("Reservation cancelled");
+    }
+  } else {
+    // Unreserving
+    delete reservations[wish.id];
+
+    const reserveBtn = card.querySelector('[data-role="reserve"]');
+    const status = card.querySelector(".reserve-status");
+    card.classList.remove("reserved");
+    reserveBtn.textContent = "Reserve";
+    reserveBtn.setAttribute("aria-pressed", "false");
+    status.textContent = "";
+
+    await persistReservations();
+  }
 }
 
 const gallery = document.querySelector(".portrait-gallery");
