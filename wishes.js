@@ -125,6 +125,14 @@ function createWishCard(wish) {
   const imageMarkup = wish.image
     ? `<img src="${wish.image}" alt="${wish.title}">`
     : "";
+  
+  // Prepare description preview
+  let descriptionMarkup = '';
+  if (wish.description) {
+    const needsFade = wish.description.length > 120;
+    descriptionMarkup = `<p class="wish-description-preview${needsFade ? ' has-more' : ''}">${wish.description}</p>`;
+  }
+
   const card = document.createElement("article");
   card.className = `wish-card${isReserved ? " reserved" : ""}`;
   card.dataset.wishId = wish.id;
@@ -134,7 +142,7 @@ function createWishCard(wish) {
       <div class="wish-body">
         <p class="wish-title">${wish.title}</p>
         ${wish.price ? `<span class="wish-price">${wish.price}</span>` : ""}
-        ${wish.description ? '<span class="wish-has-description">ℹ️ Klicken für Details</span>' : ''}
+        ${descriptionMarkup}
       </div>
     </div>
     <div class="wish-actions">
@@ -159,6 +167,7 @@ function createWishCard(wish) {
 
   return card;
 }
+
 
 
 function showNameModal() {

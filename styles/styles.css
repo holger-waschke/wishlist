@@ -35,6 +35,27 @@ body {
   z-index: 10;
 }
 
+.wish-description-preview {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+  position: relative;
+  max-height: 3.5rem;
+  overflow: hidden;
+}
+
+.wish-description-preview.has-more::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5rem;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+}
+
 .wish-editor {
   margin-top: 1.5rem;
 }
