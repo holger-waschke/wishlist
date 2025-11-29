@@ -1,8 +1,7 @@
 :root {
   color-scheme: light dark;
-  --bg: #392323;          /* was #f3f4f6 */
-  --card: #ffffff;
-  --text: #ffffff;        /* make text light on black */
+  --bg: #392323;
+  --text: #ffffff;
   --muted: #9ca3af;
   --accent: #f97316;
   --accent-dark: #ea580c;
@@ -26,6 +25,7 @@ body {
   margin: 0 auto;
   padding: clamp(1rem, 4vw, 2.5rem) 4rem;
   position: relative;
+  z-index: 1;
 }
 
 .page-actions {
@@ -35,18 +35,9 @@ body {
   z-index: 10;
 }
 
-.page-action-button {
-  padding: 0.4rem 0.9rem;
-  font-size: 0.9rem;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  color: var(--text);
-  text-transform: none;
-}
 .wish-editor {
   margin-top: 1.5rem;
 }
-
 
 .wish-form {
   margin-top: 3rem;
@@ -65,12 +56,11 @@ body {
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
- 
- .wish-form[hidden] {
-   display: none;
- }
 
- /* tiny, subtle burger button */
+.wish-form[hidden] {
+  display: none;
+}
+
 .burger-button {
   width: 28px;
   height: 22px;
@@ -79,7 +69,7 @@ body {
   background: transparent;
   cursor: pointer;
   position: relative;
-  opacity: 0.5; /* barely visible */
+  opacity: 0.5;
   transition: opacity 150ms ease;
 }
 
@@ -106,7 +96,6 @@ body {
   bottom: 6px;
 }
 
-/* simple "X" animation when open */
 .burger-button[aria-expanded="true"] span:first-child {
   transform: translateY(4px) rotate(45deg);
 }
@@ -115,7 +104,6 @@ body {
   transform: translateY(-4px) rotate(-45deg);
 }
 
-/* dropdown menu */
 .page-menu {
   position: absolute;
   top: 30px;
@@ -148,7 +136,6 @@ body {
 .page-menu-item:focus-visible {
   background: rgba(255, 255, 255, 0.08);
 }
-
 
 .wish-form form {
   display: flex;
@@ -185,24 +172,14 @@ body {
   color: #f87171;
 }
 
-.wish-preview {
-  margin: 0;
-  font-size: 0.95rem;
-  color: var(--muted);
-}
-
 .form-status[data-status="success"] {
   color: var(--reserved);
 }
 
-.form-status[data-status="error"] {
-  color: #f87171;
-}
-
-@media (max-width: 600px) {
-  .wish-card img {
-    max-height: 180px;
-  }
+.wish-preview {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 header {
@@ -225,16 +202,57 @@ header p {
   max-width: 65ch;
 }
 
+.hero-image {
+  margin-top: 1rem;
+  max-width: 620px;
+  width: 100%;
+  border-radius: 1rem;
+  display: block;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.portrait-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.portrait-gallery button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.portrait {
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease;
+}
+
+.portrait:hover {
+  transform: scale(1.95);
+}
+
 .wish-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  margin-top: 2.5rem; /* space between portraits and wishes */
+  margin-top: 2.5rem;
 }
 
 .wish-card {
-  background: rgba(0, 0, 0, 0.6); /* darker, semi‑transparent */
-  color: var(--text);             /* use the global light text color */
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--text);
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
@@ -245,194 +263,12 @@ header p {
 }
 
 .wish-card.reserved {
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.25);
-}
-
-.wish-card img {
-  width: 100%;
-  height: auto;          /* let the aspect ratio define the height */
-  max-height: 220px;     /* optional: cap height so tall images don’t get huge */
-  object-fit: contain;   /* scale to fit, no cutting */
-  background: rgba(15, 23, 42, 0.8); /* letterbox background around image */
-}
-
-.wish-body {
-  padding: 1.15rem 1.25rem 1.35rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.wish-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--text);
-}
-
-.wish-price {
-  font-weight: 600;
-  color: var(--accent-dark, #f97316);
-}
-
-.wish-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1rem;
-}
-
-.btn {
-  border: none;
-  border-radius: 999px;
-  padding: 0.65rem 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-
-.hero-image {
-  margin-top: 1rem;
-  max-width: 620px;       /* limit size */
-  width: 100%;            /* stay responsive */
-  border-radius: 1rem;
-  display: block;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.45);
-  margin-left: auto;      /* center horizontally */
-  margin-right: auto;
-}
-.btn:focus-visible {
-  outline: 3px solid rgba(249, 115, 22, 0.4);
-  outline-offset: 2px;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: white;
-  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  background: var(--accent-dark);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--accent-dark);
-  border: 1px solid rgba(249, 115, 22, 0.4);
-}
-
-.wish-card.reserved .btn-outline {
-  color: var(--reserved);
-  border-color: rgba(16, 185, 129, 0.4);
-}
-
-.reserve-status {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--reserved);
-  margin-left: auto;
-  align-self: center;
-}
-
-.instructions {
-  padding: 1rem 1.25rem;
-  border: 1px dashed rgba(15, 23, 42, 0.2);
-  border-radius: 0.85rem;
-  background: rgba(255, 255, 255, 0.6);
-  margin-bottom: 2rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.reservation {
-  margin-top: 2rem;
-  padding: 1.25rem;
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  border-radius: 0.85rem;
-  background: rgba(255, 255, 255, 0.6);
-}
-
-.reservation h2 {
-  font-size: 1.5rem;
-  margin: 0 0 1rem;
-}
-
-.reservation label {
-  display: block;
-  margin-bottom: 0.75rem;
-}
-
-.reservation input[type="text"] {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid rgba(15, 23, 42, 0.2);
-  border-radius: 0.5rem;
-  font-size: 1rem;
-}
-
-.reservation input[type="checkbox"] {
-  margin-right: 0.5rem;
-}
-
-.reservation button {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 150ms ease;
-}
-
-.reservation button:hover {
-  background: var(--accent-dark);
-}
-
-.portrait-gallery {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
-}
-
-/* make the button itself invisible */
-.portrait-gallery button {
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-/* ...existing .portrait styles... */
-.portrait {
-  width: 160px;
-  height: 160px;
-  border-radius: 999px;
-  object-fit: cover;
-  display: block;
-  border: 3px solid rgba(255,255,255,0.4);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-  transition: transform 0.25s ease;
-}
-
-.portrait:hover {
-  transform: scale(1.95);
-}
-.wish-card.reserved {
   transform: scale(1.02);
   box-shadow: 0 12px 30px rgba(22, 163, 74, 0.35);
   border: 2px solid rgba(22, 163, 74, 0.7);
   animation: reserved-pop 250ms ease-out;
 }
 
-/* reserved visual overlay */
 .wish-card.reserved::before {
   content: "Reserviert";
   position: absolute;
@@ -476,6 +312,112 @@ header p {
   100% {
     transform: scale(1.02);
   }
+}
+
+.wish-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  background: rgba(15, 23, 42, 0.8);
+}
+.wish-card-clickable {
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+
+.wish-card-clickable:hover {
+  transform: translateY(-2px);
+}
+
+.wish-body {
+  padding: 1.15rem 1.25rem 1.35rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.wish-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+.wish-price {
+  font-weight: 600;
+  color: var(--accent-dark);
+}
+
+.wish-has-description {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+.wish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0 1.25rem 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  height: 42px;
+  min-width: 100px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.95rem;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(249, 115, 22, 0.4);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background: var(--accent-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--accent-dark);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+.wish-card.reserved .btn-outline {
+  color: var(--reserved);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.reserve-status {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--reserved);
+  display: block;
+  text-align: center;
+  padding: 0 1.25rem 1rem;
 }
 
 .modal {
@@ -554,4 +496,69 @@ header p {
 
 .modal-actions .btn {
   flex: 1;
+}
+
+.modal-content-wide {
+  max-width: 600px;
+}
+
+.modal-wish-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  font-size: 1.5rem;
+  line-height: 1;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  margin: 0 0 1rem;
+}
+
+.modal-reserved {
+  font-weight: 600;
+  color: var(--reserved);
+  margin: 0 0 1rem;
+}
+
+.modal-description {
+  margin: 1rem 0 1.5rem;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.modal-no-description {
+  color: var(--muted);
+  font-style: italic;
+  margin: 1rem 0 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .wish-card img {
+    height: 180px;
+  }
 }

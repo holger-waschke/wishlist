@@ -13,6 +13,10 @@ const modal = document.getElementById("name-modal");
 const nameForm = document.getElementById("name-form");
 const nameInput = document.getElementById("reserver-name");
 
+// Description modal elements
+const descriptionModal = document.getElementById("description-modal");
+const descriptionContent = document.getElementById("description-content");
+
 async function initializeWishlist(wishes = []) {
   reservations = await loadReservations();
   wishesByPerson = wishes.reduce((acc, wish) => {
@@ -68,6 +72,53 @@ async function persistReservations() {
   }
 }
 
+function showDescriptionModal(wish) {
+  if (!descriptionModal || !descriptionContent) return;
+
+  const reservedBy = reservations[wish.id] || "";
+  const isReserved = Boolean(reservedBy);
+
+  descriptionContent.innerHTML = `
+    ${wish.image ? `<img src="${wish.image}" alt="${wish.title}" class="modal-wish-image">` : ''}
+    <h2>${wish.title}</h2>
+    ${wish.price ? `<p class="modal-price">${wish.price}</p>` : ''}
+    ${isReserved ? `<p class="modal-reserved">Reserviert von ${reservedBy} ✔</p>` : ''}
+    ${wish.description ? `<div class="modal-description">${wish.description}</div>` : '<p class="modal-no-description">Keine Beschreibung vorhanden.</p>'}
+    <div class="modal-actions">
+      <a class="btn btn-primary" href="${wish.url}" target="_blank" rel="noopener noreferrer">Zum Webshop</a>
+      <button type="button" class="btn btn-outline" data-role="close-description">Schließen</button>
+    </div>
+  `;
+
+  descriptionModal.hidden = false;
+  requestAnimationFrame(() => {
+    descriptionModal.classList.add("is-visible");
+  });
+}
+
+function closeDescriptionModal() {
+  if (!descriptionModal) return;
+  descriptionModal.classList.remove("is-visible");
+  setTimeout(() => {
+    descriptionModal.hidden = true;
+  }, 200);
+}
+
+// Set up description modal close handlers
+if (descriptionModal) {
+  descriptionModal.addEventListener('click', (event) => {
+    if (event.target.closest('[data-role="close-description"]')) {
+      closeDescriptionModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !descriptionModal.hidden) {
+      closeDescriptionModal();
+    }
+  });
+}
+
 function createWishCard(wish) {
   const reservedBy = reservations[wish.id] || "";
   const isReserved = Boolean(reservedBy);
@@ -78,22 +129,34 @@ function createWishCard(wish) {
   card.className = `wish-card${isReserved ? " reserved" : ""}`;
   card.dataset.wishId = wish.id;
   card.innerHTML = `
-    ${imageMarkup}
-    <div class="wish-body">
-      <p class="wish-title">${wish.title}</p>
-      ${wish.price ? `<span class="wish-price">${wish.price}</span>` : ""}
-      <div class="wish-actions">
-        <a class="btn btn-primary" href="${wish.url}" target="_blank" rel="noopener noreferrer">Webshop</a>
-        <button class="btn btn-outline" type="button" aria-pressed="${isReserved}" data-role="reserve">
-          ${isReserved ? "Unreserve" : "Reserve"}
-        </button>
-        <span class="reserve-status" aria-live="polite">${isReserved ? `Reserviert von ${reservedBy} ✔` : ""}</span>
+    <div class="wish-card-clickable" data-role="show-description">
+      ${imageMarkup}
+      <div class="wish-body">
+        <p class="wish-title">${wish.title}</p>
+        ${wish.price ? `<span class="wish-price">${wish.price}</span>` : ""}
+        ${wish.description ? '<span class="wish-has-description">ℹ️ Klicken für Details</span>' : ''}
       </div>
     </div>
+    <div class="wish-actions">
+      <a class="btn btn-primary" href="${wish.url}" target="_blank" rel="noopener noreferrer">Webshop</a>
+      <button class="btn btn-outline" type="button" aria-pressed="${isReserved}" data-role="reserve">
+        ${isReserved ? "Unreserve" : "Reserve"}
+      </button>
+    </div>
+    <span class="reserve-status" aria-live="polite">${isReserved ? `Reserviert von ${reservedBy} ✔` : ""}</span>
   `;
 
   const reserveBtn = card.querySelector('[data-role="reserve"]');
-  reserveBtn.addEventListener("click", () => toggleReservation(wish, card));
+  reserveBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleReservation(wish, card);
+  });
+
+  const clickableArea = card.querySelector('[data-role="show-description"]');
+  clickableArea.addEventListener("click", () => {
+    showDescriptionModal(wish);
+  });
+
   return card;
 }
 
